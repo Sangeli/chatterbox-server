@@ -1,0 +1,395 @@
+/*
+
+
+body {
+    background: #eee;
+    text-align: center;
+    padding: 0 25px;
+    font-family: arial, sans-serif;
+}
+
+#main, #chats {
+    width: 500px;
+    margin: auto;
+    text-align: left;
+    background: white;
+    padding: 50px 60px;
+    border: solid #ddd;
+    border-width: 0 1px 1px 1px;
+}
+
+#main h1 {
+    margin-top: 0;
+    font-size: 35px;
+    margin-bottom: 5px;
+    padding: 5px;
+}
+
+#main h1 span {
+    font-style:italic;
+}
+
+#main ul {
+    padding-left: 20px;
+}
+
+#main .error {
+    border: 1px solid red;
+    background: #FDEFF0;
+    padding: 20px;
+}
+
+#main .success {
+    margin-top: 25px;
+}
+
+#main .success code {
+    font-size: 12px;
+    color: green;
+    line-height: 13px;
+}
+
+form {
+    padding: 20px;
+    padding-left: 0;
+    margin-bottom: 20px;
+}
+
+form input[type=text] {
+    margin-right: 10px;
+    width: 70%;
+    font-size: 12px;
+    padding: 5px;
+}
+
+.chat {
+    padding: 5px;
+    margin-bottom: 5px;
+    background-color: #eee;
+}
+
+.chat .username {
+    font-weight: 800;
+}
+
+.chat:hover {
+    background-color: #ddd;
+}
+
+.spinner {
+    float: right;
+    height: 46px;
+    margin-bottom: 5px;
+}
+
+.spinner img {
+    padding: 10px;
+}
+
+.friend {
+    color: #fff;
+    background-color: #0090da;
+}
+
+.container {
+    display: inline-block;
+}*/
+
+.roomInput {
+    display: none;
+    width: 30%;
+}
+
+/*============ BOOTSTRAP ============*/
+
+/* move special fonts to HTML head for better performance */
+@import url('http://fonts.googleapis.com/css?family=Open+Sans:200,300,400,600,700');
+
+
+/* custom template */
+html, body {
+   height: 100%;
+   font-family:'Open Sans',arial,sans-serif;
+}
+
+a {
+  color:#222222;
+}
+
+.wrapper, .row {
+   height: 100%;
+   margin-left:0;
+   margin-right:0;
+}
+
+.wrapper:before, .wrapper:after,
+.column:before, .column:after {
+    content: "";
+    display: table;
+}
+
+.wrapper:after,
+.column:after {
+    clear: both;
+}
+
+.column {
+    height: 100%;
+    overflow: auto;
+    *zoom:1;
+}
+
+.column {
+    padding: 20px;
+}
+
+.padding {
+    padding: 30px;
+}
+
+.box {
+    bottom: 0; /* increase for footer use */
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    /*background-image:url('http://lorempixel.com/1024/760/nature/3/');
+    background-size:cover;
+    background-attachment:fixed;*/
+}
+
+.divider {
+    margin-top:32px;
+}
+
+#main {
+    background-color:#fefefe;
+}
+#main .img-circle {
+  margin-top:18px;
+  height:70px;
+  width:70px;
+}
+
+#sidebar {
+  background-color: #cce2df;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: block;
+  z-index: 1;
+  color: #fff;
+  font-weight: 200;
+  background-size: cover;
+  background-position: center center;
+
+}
+
+#sidebar2 {
+  background-color: #cce2df;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: block;
+  z-index: 1000;
+  color: #fff;
+  font-weight: 200;
+  background-size: cover;
+  background-position: center center;
+
+}
+
+#sidebar .nav {
+  margin-top: 20px;
+  position: absolute;
+  width: 100%;
+}
+#sidebar .nav li > a {
+  color: #808080;
+  margin: 5px 0px;
+  opacity: .86;
+  border-radius: 4px;
+  text-align: right;
+  padding-right: 30px
+}
+#sidebar .nav li:active {
+    background-color: rgba(5, 233, 127, 0.35);
+}
+#sidebar .nav li:hover > a {
+  background-color: rgba(5, 233, 127, 0.35);
+  opacity: 1;
+}
+#sidebar .nav li.active > a {
+  color: #808080;
+  opacity: 1;
+  background-color: rgba(5, 233, 127, 0.35);
+}
+#sidebar .nav p {
+  margin: 0;
+  line-height: 30px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: 
+}
+
+/*#sidebar a {
+    color:#ccc;
+    background-color:transparent;
+}
+#sidebar a.logo {
+  display:block;
+  padding:3px;
+  background-color:#fff;
+  color:#777777;
+  height:40px;
+  width:40px;
+  margin:15px;
+  font-size:26px;
+  font-weight:700;
+  text-align:center;
+  text-decoration:none;
+  text-shadow:0 0 0;
+}
+#sidebar-footer {
+  position:absolute;bottom:5px;
+}
+#footer {
+  margin-bottom:20px;
+}*/
+
+/* center and adjust the sidebar contents on smaller devices */
+@media (max-width: 768px) {
+  #sidebar,#sidebar a.logo {
+    text-align:center;
+    margin:0 auto;
+    margin-top:30px;
+    font-size:26px;
+  }
+  #sidebar a.logo {
+    font-size:50px;
+    height:75px;
+    width:75px;
+    margin-bottom:30px;
+  }
+}
+
+
+
+
+/* bootstrap overrides */
+
+h1,h2,h3 {
+   font-weight:800;
+   font-family:'Open Sans',arial,sans-serif;
+}
+
+.jumbotron {
+  background-color:transparent;
+}
+.label-default {
+  background-color:#dddddd;
+}
+.page-header {
+  margin-top: 55px;
+  padding-top: 9px;
+  border-top:1px solid #eeeeee;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:2px;
+}
+
+.col-sm-9.full {
+    width: 100%;
+}
+
+small.text-muted {
+  font-family:courier,courier-new,monospace;
+}
+
+.nav-center {
+  transform: translateX(-50%);
+  left: 50%;
+  position: absolute;
+}
+
+.nav-center h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  height: 100%;
+}
+
+.navbar {
+  margin-bottom: 0;
+  background: linear-gradient(120deg, #cec0a9, #cec0a9);
+}
+
+#header {
+  height: 75px;
+}
+
+#navMain {
+    height: 75px;
+}
+
+#navPadding {
+    padding: 12px 15px;
+}
+
+.nav-brand {
+    padding-bottom: 10px;
+}
+
+#userIdDisplay {
+    font-size: 25px;
+}
+
+#logoName {
+    padding-top: 10px;
+    font-family: Monoton;
+    margin-top: -20px;
+}
+
+
+#logo {
+    margin-top: -10px;
+}
+
+
+#featured {
+  position: fixed;
+  z-index: 999;
+  background: linear-gradient(90deg, #f2f0ed, #fff);
+}
+
+.featureBar {
+    display: inline-block;
+    margin-left: 2%;
+    padding-top: 1%;
+}
+
+.featureBar ul {
+    display: inline-block;
+    width: 200px;
+}
+.featureBar ul li {
+    display: inline-block;
+    width: 30px;
+}
+
+#myModal {
+    z-index: 2000;
+    padding-top: 100px;
+}
+
+#postIcon {
+    display: inline-block;
+}
+
+#main {
+    background: linear-gradient(90deg, #f2f0ed, #fff);
+}
+
+#roomLabel {
+    font-size: 20px;
+}

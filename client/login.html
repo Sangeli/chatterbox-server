@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles/login.css">
+	<link href="css/animate.css" rel="stylesheet" type="text/css">
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/font-awesome.css" rel="stylesheet" type="text/css">
+
+
+
+</head>
+<body ng-app="myApp">
+
+	<div id="loginOne">
+		<form ng-controller="myctrl">
+			<h2>login</h2>
+			<input placeholder="what's your name?" id="username" ng-model="loginUserName">
+			<input placeholder="password" id="loginUserPassword" ng-model="loginPassword">
+			<button type="button" ng-click="loginUser()">login</button>
+		</form>
+	</div>
+
+	<div id="registerTwo">
+		<form ng-controller="userctrl">
+			<h2>register user</h2>
+			<input placeholder="what's your name?" id="newUsername" ng-model="username">
+			<input placeholder="password" id="newPassword" ng-model="password">
+			<button type="button" ng-click="registerUser()">register</button>
+		</form>
+	</div>
+
+
+
+
+ <script type="text/javascript" src="js/jquery.js"></script>
+ <script src="js/main.js"></script>
+ <script src="js/bootstrap.min.js"></script>
+ <script src="js/app.js"></script>
+ <script src="js/controllers/myctrl.js"></script>
+ <script src="js/controllers/costctrl.js"></script>
+ <script src="js/controllers/userctrl.js"></script>
+
+</body>
+</html>

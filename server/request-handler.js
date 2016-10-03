@@ -12,6 +12,10 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 
+
+var allMessages = [];
+
+
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
   //
@@ -29,6 +33,30 @@ var requestHandler = function(request, response) {
   // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
+
+
+    var responseBody = {
+      headers: headers,
+      method: request.method,
+      url: request.url,
+    };
+
+
+  var onPost = function(data) {
+    response.statusCode = 201;
+    console.log('post');
+    console.log(data);
+    data = JSON.parse(data);
+    allMessages.push(data);
+    responseBody.results = data;
+  }
+
+  var onGet = function(data) {
+    response.statusCode = 200;
+    responseBody.results = allMessages;
+    console.log('allMessages', responseBody.results);
+  };
+
   // The outgoing status.
   var statusCode = 200;
 
@@ -39,11 +67,60 @@ var requestHandler = function(request, response) {
   //
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
-  headers['Content-Type'] = 'text/plain';
+  headers['Content-Type'] = 'application/json';
 
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
-  response.writeHead(statusCode, headers);
+
+
+
+  request.on('error', function(err) {
+    console.log('got request error');
+    console.log(err);
+  });
+
+
+  var data = [];
+  var bufferedData;
+
+  request.on('data', function(chunk) {
+    data.push(chunk);
+    console.log('data');
+  });
+
+  
+
+
+  request.on('end', function() {
+
+    bufferedData = Buffer.concat(data).toString();
+    console.log('end');
+
+    response.on('error', function(err) {
+      console.log('got response error');
+      console.log(err);
+    });
+
+    if (request.method === 'POST') {
+      onPost(bufferedData);
+    } else if(request.method === 'GET') {
+      onGet(bufferedData);
+    }
+    
+    response.setHeader('Content-Type', 'application/json');
+
+
+
+
+    console.log('bufferedData');
+    console.log(bufferedData);
+
+
+
+    response.end(JSON.stringify(responseBody));
+
+
+  })
 
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
@@ -52,7 +129,21 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end('Hello, World!');
+  /*
+  var responseBody = {
+    headers: headers,
+    method: request.method,
+    url: request.url,
+    body: data
+  };
+
+  response.write(JSON.stringify(responseBody));
+  console.log('bufferedData');
+  console.log(bufferedData);
+  */
+
+
+
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
@@ -70,4 +161,6 @@ var defaultCorsHeaders = {
   'access-control-allow-headers': 'content-type, accept',
   'access-control-max-age': 10 // Seconds.
 };
+
+module.exports = requestHandler;
 
