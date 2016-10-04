@@ -22,7 +22,7 @@ var defaultCorsHeaders = {
 
 
 
-var allMessages = [];
+var allMessages;
 var endpoints = new Set();
 endpoints.add('/classes/messages');
 endpoints.add('/classes/room');
@@ -52,6 +52,8 @@ var isBadUrl = function (url) {
 
 //allMessages.push(fakeMessage);
 
+var wstream;
+
 var requestHandler = function(request, response) {
 
 
@@ -70,6 +72,25 @@ var requestHandler = function(request, response) {
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
+
+
+  if (wstream === undefined) {
+    var dataFile = 'messages.txt';
+    fs.readFile(dataFile, function(err, data) {
+      data = data.toString();
+      var jsonData = data;
+      if (data.length === 0 ) {
+        allMessages = [];
+      } else {
+        if (!jsonData.endsWith(']')) {
+          jsonData += ']';
+        }
+        allMessages = JSON.parse(jsonData);
+      }
+      wstream = fs.createWriteStream(dataFile, {flags: 'w'});
+      wstream.write(data);
+    });
+  }
 
 
   // See the note below about CORS headers.
@@ -95,18 +116,14 @@ var requestHandler = function(request, response) {
 
 
   var contentDelivery = function(url) {
-    console.log(url);
     var filePath = deliveryEndPoints[url];
-    console.log('filepath', filePath);
     var ending;
     if (filePath.endsWith('.css')) {
       ending = 'css';
     } else {
       ending = 'html';
     }
-    console.log('before read');
     fs.readFile(filePath, function(err, data) {
-      console.log('err', err);
       response.writeHead(200, {'Content-Type': 'text/' + ending, 'Content-Length': data.length});
       //response.write(data);
       response.end(data);
@@ -119,16 +136,25 @@ var requestHandler = function(request, response) {
     responseBody.results = data;
   };
 
-  var onPost = function(data) {
-    console.log('post', data);
+  var onPost = function(stringData) {
     //data = Buffer.concat(data).toString();
-    data = JSON.parse(data);
-    if (!data.username || !data.roomname || !data.message) {
+    var data = JSON.parse(stringData);
+    console.log('data first', data);
+    if (!data.username || !data.roomname || !data.text) {
       statusCode = 404;
+      console.log('bad');
     } else {
       statusCode = 201;
       data.objectId = allMessages.length;
       data.createdAt = new Date();
+
+      stringData = JSON.stringify(data);
+      if (allMessages.length === 0) {
+        stringData = '[' + stringData;
+      } else {
+        stringData = ', ' + stringData;
+      }
+      wstream.write(stringData);
       allMessages.push(data);
       responseBody.results = data;
     }
@@ -168,7 +194,6 @@ var requestHandler = function(request, response) {
   var data = [];
 
   request.on('data', function(chunk) {
-    console.log('chunk', chunk);
     if (chunk !== undefined) {
       data.push(chunk);
     }
@@ -177,9 +202,7 @@ var requestHandler = function(request, response) {
 
   request.on('end', function() {
 
-    //console.log(data, "data before buffer");
-    //console.log('response', response);
-    console.log('request', request.url);
+
     if (checkMakeDelivery()) {
       return;
     } if (isBadUrl(request.url)) {

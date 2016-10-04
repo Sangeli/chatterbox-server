@@ -1,5 +1,68 @@
 // YOUR CODE HERE:
 
+var msToTime = (s) => {
+  var ms = s % 1000;
+  s = (s - ms) / 1000;
+  var secs = s % 60;
+  s = (s - secs) / 60;
+  var mins = s % 60;
+  var hrs = (s - mins) / 60;
+  if (hrs > 0) {
+    return (hrs + ' hours ago');
+  } else if (mins > 0) {
+    return (mins + ' minutes ago');
+  } else {
+    return (secs + ' seconds ago');
+  }
+};
+
+
+var stringClean = (string) => {
+  if (string === undefined) {
+    return 'notUndefined';
+  }
+  var newString = '';
+  for (var i = 0; i < string.length; i++) {
+    var char = string[i];
+    if (char === '/') {
+      newString += '&#x2F;';
+    } else if (char === '&') {
+      newString += '&amp;';
+    } else if (char === '<') {
+      newString += '&lt;';
+    } else if (char === '>') {
+      newString += '&gt;';
+    } else if (char === '"') {
+      newString += '&quot;';
+    } else if (char === '\'') {
+      newString += '&#x27;';
+    } else {
+      newString += char;
+    }
+  }
+  return newString;
+};
+
+
+
+var wrapDiv = (text, className) => {
+  var output = '<div';
+  if (className) {
+    output += ' class=' + className;
+  }
+  output += '>';
+  output += text + '</div>';
+  return output;
+};
+
+var cleanMessage = (messageObj) => {
+  var keys2clean = ['text', 'username', 'roomname'];
+  for (var i = 0; i < keys2clean.length; i ++) {
+    messageObj[keys2clean[i]] = stringClean(messageObj[keys2clean[i]]);
+  }
+};
+
+
 
 class ChatterBox {
   constructor() {
@@ -25,9 +88,9 @@ class ChatterBox {
       //$('.submit').reset();
     });
 
-    setInterval( () => {
-      this.fetch();
-    }, 5000);
+    // setInterval( () => {
+    //   this.fetch();
+    // }, 5000);
 
     $('#roomSelect').on('change', (e) => {
       this.updateRoom();
@@ -224,64 +287,6 @@ class ChatterBox {
   }
 }
 
-var wrapDiv = (text, className) => {
-  var output = '<div';
-  if (className) {
-    output += ' class=' + className;
-  }
-  output += '>';
-  output += text + '</div>';
-  return output;
-};
-
-var cleanMessage = (messageObj) => {
-  var keys2clean = ['text', 'username', 'roomname'];
-  for (var i = 0; i < keys2clean.length; i ++) {
-    messageObj[keys2clean[i]] = stringClean(messageObj[keys2clean[i]]);
-  }
-};
-
-var stringClean = (string) => {
-  if (string === undefined) {
-    return 'notUndefined';
-  }
-  var newString = '';
-  for (var i = 0; i < string.length; i++) {
-    var char = string[i];
-    if (char === '/') {
-      newString += '&#x2F;';
-    } else if (char === '&') {
-      newString += '&amp;';
-    } else if (char === '<') {
-      newString += '&lt;';
-    } else if (char === '>') {
-      newString += '&gt;';
-    } else if (char === '"') {
-      newString += '&quot;';
-    } else if (char === '\'') {
-      newString += '&#x27;';
-    } else {
-      newString += char;
-    }
-  }
-  return newString;
-};
-
-var msToTime = (s) => {
-  var ms = s % 1000;
-  s = (s - ms) / 1000;
-  var secs = s % 60;
-  s = (s - secs) / 60;
-  var mins = s % 60;
-  var hrs = (s - mins) / 60;
-  if (hrs > 0) {
-    return (hrs + ' hours ago');
-  } else if (mins > 0) {
-    return (mins + ' minutes ago');
-  } else {
-    return (secs + ' seconds ago');
-  }
-};
 
 var app = new ChatterBox();
 $(document).ready( () => {

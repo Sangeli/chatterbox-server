@@ -61,7 +61,7 @@ describe('Node Server Request Listener Function', function() {
   it('Should accept posts to /classes/room', function() {
     var stubMsg = {
       username: 'Jono',
-      message: 'Do my bidding!',
+      test: 'Do my bidding!',
       roomname: 'lobby'
     };
     var req = new stubs.request('/classes/messages', 'POST', stubMsg);
@@ -77,9 +77,9 @@ describe('Node Server Request Listener Function', function() {
     // expect(res._data).to.equal(JSON.stringify('\n'));
     expect(res._ended).to.equal(true);
   });
-  it('Should not accept posts to /classes/room without username||room||message', function() {
+  it('Should not accept posts to /classes/room without username||room||test', function() {
     var stubMsg = {
-      message: 'Do my bidding!',
+      test: 'Do my bidding!',
       roomname: 'Lobby'
     };
     var req = new stubs.request('/classes/messages', 'POST', stubMsg);
@@ -94,7 +94,7 @@ describe('Node Server Request Listener Function', function() {
 
     stubMsg = {
       username: 'Steve',
-      message: 'Do my bidding!'
+      test: 'Do my bidding!'
     };
     req = new stubs.request('/classes/messages', 'POST', stubMsg);
     res = new stubs.response();
@@ -126,7 +126,7 @@ describe('Node Server Request Listener Function', function() {
   it('Should respond with messages that were previously posted', function() {
     var stubMsg = {
       username: 'Jono',
-      message: 'Do my bidding!',
+      test: 'Do my bidding!',
       roomname: 'lobby'
     };
     var req = new stubs.request('/classes/messages', 'POST', stubMsg);
