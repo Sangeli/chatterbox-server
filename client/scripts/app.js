@@ -71,7 +71,7 @@ class ChatterBox {
     this.addedRooms = new Set();
     this.addedMessages = {};
     //this.server = 'https://api.parse.com/1/classes/messages?order=-createdAt';
-    this.server = 'http://127.0.0.1:3000';
+    this.server = (process.env.PORT === undefined) ? 'http://127.0.0.1:3000' : 'https://chatreactorserver.herokuapp.com';
     this.messageServer = this.server + '/classes/messages';
     this.messagesByUser = {}; 
     this.friendSet = new Set();
