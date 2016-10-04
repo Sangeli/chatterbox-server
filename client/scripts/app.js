@@ -89,9 +89,9 @@ class ChatterBox {
       //$('.submit').reset();
     });
 
-    // setInterval( () => {
-    //   this.fetch();
-    // }, 5000);
+    setInterval( () => {
+      this.fetch();
+    }, 5000);
 
     $('#roomSelect').on('change', (e) => {
       this.updateRoom();
@@ -116,7 +116,7 @@ class ChatterBox {
   filter (attribute, value) {
     $.ajax({
       // This is the url you should use to communicate with the parse API server.
-      url: this.messageServer, //+'?order=-createdAt',
+      url: this.messageServer + '?order=-createdAt',
       type: 'GET',
       contentType: 'application/json',
       success: (data) => {
@@ -272,7 +272,7 @@ class ChatterBox {
       success: (data) => {
         messageObj.createdAt = data.createdAt;
         messageObj.objectId = data.objectId;
-        //ourContext.renderMessage(messageObj);
+        ourContext.renderMessage(messageObj);
       },
       error: (data) => {
         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
