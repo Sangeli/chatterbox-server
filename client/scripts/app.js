@@ -3,7 +3,7 @@ var app = {};
 
 app.rooms = new Set();
 app.username;
-app.server = 'http://127.0.0.1:3000'
+app.server = 'http://127.0.0.1:3000';
 //================================initialize and rerender callout ==============================//
 app.init = function() {
   app.username = window.location.search.match(/\?username([^\?])*/)[0].split('=')[1];
