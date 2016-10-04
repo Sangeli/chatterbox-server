@@ -28,6 +28,16 @@ endpoints.add('/classes/messages');
 endpoints.add('/classes/room');
 
 
+
+var fakeMessage = {
+  username: 'alec',
+  text: 'i am text',
+  roomname: 'lobby'
+};
+
+//allMessages.push(fakeMessage);
+
+
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
   //
@@ -71,13 +81,13 @@ var requestHandler = function(request, response) {
     statusCode = 404;
     console.log('bad url');
     responseBody.results = data;
-  }
+  };
 
   var onPost = function(data) {
     console.log('post', data);
     //data = Buffer.concat(data).toString();
     data = JSON.parse(data);
-    
+
     statusCode = 201;
     allMessages.push(data);
     responseBody.results = data;
@@ -87,6 +97,12 @@ var requestHandler = function(request, response) {
     statusCode = 200;
     responseBody.results = allMessages;
     console.log('allMessages', responseBody.results);
+  };
+
+  var onOptions = function(data) {
+
+    statusCode = 200;
+    response.writeHead(statusCode, headers);
   };
 
 
@@ -110,9 +126,8 @@ var requestHandler = function(request, response) {
 
   request.on('end', function() {
 
-    console.log(data, "data before buffer");
-
-    console.log('response', response);
+    //console.log(data, "data before buffer");
+    //console.log('response', response);
 
 
 
@@ -122,6 +137,12 @@ var requestHandler = function(request, response) {
       onPost(data);
     } else if(request.method === 'GET') {
       onGet(data);
+    } else if(request.method === 'OPTIONS') {
+      onOptions(data);
+    } else {
+      console.log('unexpected route');
+      console.log(request.method);
+      console.log(request.url);
     }
     
     //response.setHeader('Content-Type', 'application/json');

@@ -9,6 +9,9 @@ app.init = function() {
   app.username = window.location.search.match(/\?username([^\?])*/)[0].split('=')[1];
   $('#roomLabel').text('Tweet Feed');
   app.fetch();
+  console.log('init');
+
+  //setInterval(app.fetch, 5000);
 };
 
 app.fetch = function() {
@@ -16,9 +19,10 @@ app.fetch = function() {
     // This is the url you should use to communicate with the parse API server.
     url: app.server + '/classes/messages',
     type: 'GET',
-    data: 'order=-createdAt',
+    //data: 'order=-createdAt',
     contentType: 'application/json',
     success: function (data) {
+    data = JSON.parse(data);
       console.log('chatterbox: Message received', data);
       app.displayTweets(data);
       app.setRoomSelector(data);
@@ -38,6 +42,7 @@ app.filterFetch = function (category, filter) {
     data: 'where={' + JSON.stringify(category) + ':{"$regex":' + JSON.stringify(filter) + '}}',
     contentType: 'application/json',
     success: function (data) {
+      data = JSON.parse(data);
       console.log('chatterbox: Message received', data);
       app.displayTweets(data);
     },
@@ -50,6 +55,7 @@ app.filterFetch = function (category, filter) {
 
 //=============================parses and displays tweeets ===================================//
 app.displayTweets = function(data) {
+  console.log(data);
   var index = 0;
   data.results.forEach(function(tweet) {
     if (!tweet.username || !tweet.text) {
