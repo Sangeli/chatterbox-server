@@ -11,7 +11,7 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
-
+var fs = require('fs');
 
 var defaultCorsHeaders = {
   'access-control-allow-origin': '*',
@@ -37,8 +37,25 @@ var fakeMessage = {
 
 //allMessages.push(fakeMessage);
 
-
+var first = true;
 var requestHandler = function(request, response) {
+
+  if(first) {
+    console.log('request', request);
+    fs.readFile('server/index.html', function(err, data){
+      console.log('err', err);
+      console.log('read', data);
+      response.writeHead(200, {'Content-Type': 'text/html', 'Content-Length':data.length});
+      //response.write(data);
+      response.end(data);
+    });
+  } else {
+    return;
+  }
+  first = false;
+
+  //return;
+
   // Request and Response come from node's http module.
   //
   // They include information about both the incoming request, such as
@@ -120,8 +137,6 @@ var requestHandler = function(request, response) {
       data.push(chunk);
     }
   });
-
-  
 
 
   request.on('end', function() {

@@ -22,7 +22,7 @@ app.fetch = function() {
     //data: 'order=-createdAt',
     contentType: 'application/json',
     success: function (data) {
-    data = JSON.parse(data);
+      data = JSON.parse(data);
       console.log('chatterbox: Message received', data);
       app.displayTweets(data);
       app.setRoomSelector(data);
