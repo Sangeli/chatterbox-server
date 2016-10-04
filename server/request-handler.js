@@ -26,6 +26,11 @@ var allMessages = [];
 var endpoints = new Set();
 endpoints.add('/classes/messages');
 endpoints.add('/classes/room');
+var deliveryEndPoints = {
+  '/' : 'client/index.html',
+  '/styles/styles.css': 'client/styles/styles.css',
+  '/scripts/app.js' : 'client/scripts/app.js'
+};
 
 
 
@@ -35,26 +40,20 @@ var fakeMessage = {
   roomname: 'lobby'
 };
 
+
+var isBadUrl = function (url) {
+  if (endpoints.has(url)) {
+    return false;
+  } else if (url.startsWith('/?username=')) {
+    return false;
+  }
+  return true;
+};
+
 //allMessages.push(fakeMessage);
 
-var first = true;
 var requestHandler = function(request, response) {
 
-  if(first) {
-    console.log('request', request);
-    fs.readFile('server/index.html', function(err, data){
-      console.log('err', err);
-      console.log('read', data);
-      response.writeHead(200, {'Content-Type': 'text/html', 'Content-Length':data.length});
-      //response.write(data);
-      response.end(data);
-    });
-  } else {
-    return;
-  }
-  first = false;
-
-  //return;
 
   // Request and Response come from node's http module.
   //
@@ -94,9 +93,29 @@ var requestHandler = function(request, response) {
 
   var statusCode;
 
+
+  var contentDelivery = function(url) {
+    console.log(url);
+    var filePath = deliveryEndPoints[url];
+    console.log('filepath', filePath);
+    var ending;
+    if (filePath.endsWith('.css')) {
+      ending = 'css';
+    } else {
+      ending = 'html';
+    }
+    console.log('before read');
+    fs.readFile(filePath, function(err, data) {
+      console.log('err', err);
+      response.writeHead(200, {'Content-Type': 'text/' + ending, 'Content-Length': data.length});
+      //response.write(data);
+      response.end(data);
+    });
+  };
+
   var onBadUrl = function(data) {
     statusCode = 404;
-    console.log('bad url');
+    console.log('bad url', request.url);
     responseBody.results = data;
   };
 
@@ -104,10 +123,15 @@ var requestHandler = function(request, response) {
     console.log('post', data);
     //data = Buffer.concat(data).toString();
     data = JSON.parse(data);
-
-    statusCode = 201;
-    allMessages.push(data);
-    responseBody.results = data;
+    if (!data.username || !data.roomname || !data.message) {
+      statusCode = 404;
+    } else {
+      statusCode = 201;
+      data.objectId = allMessages.length;
+      data.createdAt = new Date();
+      allMessages.push(data);
+      responseBody.results = data;
+    }
   };
 
   var onGet = function(data) {
@@ -121,6 +145,18 @@ var requestHandler = function(request, response) {
     statusCode = 200;
     response.writeHead(statusCode, headers);
   };
+  var checkMakeDelivery = function() {
+    if (request.url.startsWith('/?username=')) {
+      (contentDelivery('/'));
+      return true;
+    }
+    if (deliveryEndPoints[request.url]) {
+      contentDelivery(request.url);
+      return true;
+    } else {
+      return false;
+    }
+  }; 
 
 
   request.on('error', function(err) {
@@ -133,7 +169,7 @@ var requestHandler = function(request, response) {
 
   request.on('data', function(chunk) {
     console.log('chunk', chunk);
-    if(chunk !== undefined) {
+    if (chunk !== undefined) {
       data.push(chunk);
     }
   });
@@ -143,16 +179,16 @@ var requestHandler = function(request, response) {
 
     //console.log(data, "data before buffer");
     //console.log('response', response);
-
-
-
-    if(!endpoints.has(request.url)) {
+    console.log('request', request.url);
+    if (checkMakeDelivery()) {
+      return;
+    } if (isBadUrl(request.url)) {
       onBadUrl(data);
     } else if (request.method === 'POST') {
       onPost(data);
-    } else if(request.method === 'GET') {
+    } else if (request.method === 'GET') {
       onGet(data);
-    } else if(request.method === 'OPTIONS') {
+    } else if (request.method === 'OPTIONS') {
       onOptions(data);
     } else {
       console.log('unexpected route');
@@ -160,13 +196,11 @@ var requestHandler = function(request, response) {
       console.log(request.url);
     }
     
-    //response.setHeader('Content-Type', 'application/json');
+
+
     response.writeHead(statusCode, headers);
-
-
-
-    response.end(JSON.stringify(responseBody));
-
+    responseBody = JSON.stringify(responseBody);
+    response.end(responseBody);
 
   });
 
@@ -177,18 +211,6 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  /*
-  var responseBody = {
-    headers: headers,
-    method: request.method,
-    url: request.url,
-    body: data
-  };
-
-  response.write(JSON.stringify(responseBody));
-  console.log('bufferedData');
-  console.log(bufferedData);
-  */
 
 
 

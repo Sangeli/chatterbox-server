@@ -61,7 +61,8 @@ describe('Node Server Request Listener Function', function() {
   it('Should accept posts to /classes/room', function() {
     var stubMsg = {
       username: 'Jono',
-      message: 'Do my bidding!'
+      message: 'Do my bidding!',
+      roomname: 'lobby'
     };
     var req = new stubs.request('/classes/messages', 'POST', stubMsg);
     var res = new stubs.response();
@@ -76,11 +77,57 @@ describe('Node Server Request Listener Function', function() {
     // expect(res._data).to.equal(JSON.stringify('\n'));
     expect(res._ended).to.equal(true);
   });
+  it('Should not accept posts to /classes/room without username||room||message', function() {
+    var stubMsg = {
+      message: 'Do my bidding!',
+      roomname: 'Lobby'
+    };
+    var req = new stubs.request('/classes/messages', 'POST', stubMsg);
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    // Expect 201 Created response status
+    expect(res._responseCode).to.equal(404);
+    expect(res._ended).to.equal(true);
+
+
+    stubMsg = {
+      username: 'Steve',
+      message: 'Do my bidding!'
+    };
+    req = new stubs.request('/classes/messages', 'POST', stubMsg);
+    res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    // Expect 201 Created response status
+    expect(res._responseCode).to.equal(404);
+    expect(res._ended).to.equal(true);
+
+
+
+    stubMsg = {
+      username: 'Steve',
+      roomname: 'Hear me roar'
+    };
+    req = new stubs.request('/classes/messages', 'POST', stubMsg);
+    res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    // Expect 201 Created response status
+    expect(res._responseCode).to.equal(404);
+    expect(res._ended).to.equal(true);
+
+
+  });
 
   it('Should respond with messages that were previously posted', function() {
     var stubMsg = {
       username: 'Jono',
-      message: 'Do my bidding!'
+      message: 'Do my bidding!',
+      roomname: 'lobby'
     };
     var req = new stubs.request('/classes/messages', 'POST', stubMsg);
     var res = new stubs.response();
@@ -117,5 +164,26 @@ describe('Node Server Request Listener Function', function() {
         expect(res._responseCode).to.equal(404);
       });
   });
-
 });
+
+// describe('Test Correct routing of endpoints', function() {
+//   it('Should answer GET requests for /username and supply html', function() {
+//     // This is a fake server request. Normally, the server would provide this,
+//     // but we want to test our function's behavior totally independent of the server code
+//     var req = new stubs.request('/?username=jo', 'GET');
+//     var res = new stubs.response();
+//     console.log(res);
+
+
+
+//     handler.requestHandler(req, res);
+
+//     expect(res._responseCode).to.equal(200);
+//     expect(res._ended).to.equal(true);
+//   });
+// });
+
+
+
+
+
