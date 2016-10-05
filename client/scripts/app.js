@@ -125,7 +125,7 @@ class ChatterBox {
           console.log('no data');
           return;
         }
-        for (var i = data.results.length - 1; i >= 0; i--) {
+        for (var i = 0 ; i < data.results.length; i++) {
           var ourResult = data.results[i];
           cleanMessage(ourResult);
           this.allRooms.add(ourResult.roomname);

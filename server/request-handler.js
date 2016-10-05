@@ -71,7 +71,7 @@ var requestHandler = function(request, response) {
   // Adding more logging to your server can be an easy way to get passive
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
-  console.log('Serving request type ' + request.method + ' for url ' + request.url);
+  //console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
 
   if (wstream === undefined) {
@@ -87,7 +87,7 @@ var requestHandler = function(request, response) {
         }
         allMessages = JSON.parse(jsonData);
         allMessages.sort(function(x, y) {
-          return new Date(y.createdAt) - new Date(x.createdAt);
+          return new Date(x.createdAt) - new Date(y.createdAt);
         });
       }
       wstream = fs.createWriteStream(dataFile, {flags: 'w'});
