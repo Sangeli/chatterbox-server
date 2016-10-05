@@ -71,7 +71,7 @@ class ChatterBox {
     this.addedRooms = new Set();
     this.addedMessages = {};
     //this.server = 'https://api.parse.com/1/classes/messages?order=-createdAt';
-    //this.server = (process.env.PORT === undefined) ? 'http://127.0.0.1:3000' : 'https://chatreactorserver.herokuapp.com';
+    //this.server = 'http://127.0.0.1:3000' ;
     this.server = 'https://chatreactorserver.herokuapp.com';
     this.messageServer = this.server + '/classes/messages';
     this.messagesByUser = {}; 
@@ -116,7 +116,7 @@ class ChatterBox {
   filter (attribute, value) {
     $.ajax({
       // This is the url you should use to communicate with the parse API server.
-      url: this.messageServer + '?order=-createdAt',
+      url: this.messageServer,
       type: 'GET',
       contentType: 'application/json',
       success: (data) => {
@@ -272,7 +272,7 @@ class ChatterBox {
       success: (data) => {
         messageObj.createdAt = data.createdAt;
         messageObj.objectId = data.objectId;
-        ourContext.renderMessage(messageObj);
+        //ourContext.renderMessage(messageObj);
       },
       error: (data) => {
         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error

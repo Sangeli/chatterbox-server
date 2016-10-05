@@ -86,6 +86,9 @@ var requestHandler = function(request, response) {
           jsonData += ']';
         }
         allMessages = JSON.parse(jsonData);
+        allMessages.sort(function(x, y) {
+          return new Date(y.createdAt) - new Date(x.createdAt);
+        });
       }
       wstream = fs.createWriteStream(dataFile, {flags: 'w'});
       wstream.write(data);
@@ -139,7 +142,6 @@ var requestHandler = function(request, response) {
   var onPost = function(stringData) {
     //data = Buffer.concat(data).toString();
     var data = JSON.parse(stringData);
-    console.log('data first', data);
     if (!data.username || !data.roomname || !data.text) {
       statusCode = 404;
       console.log('bad');
@@ -163,7 +165,6 @@ var requestHandler = function(request, response) {
   var onGet = function(data) {
     statusCode = 200;
     responseBody.results = allMessages;
-    console.log('allMessages', responseBody.results);
   };
 
   var onOptions = function(data) {
@@ -182,7 +183,7 @@ var requestHandler = function(request, response) {
     } else {
       return false;
     }
-  }; 
+  };
 
 
   request.on('error', function(err) {
